@@ -1,0 +1,123 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Live Protocol Visualizer</title>
+<link rel="stylesheet" href="/static/style.css">
+</head>
+<body>
+<div class="app">
+  <header>
+    <div>
+      <h1>Live Protocol Visualizer</h1>
+      <p>Application + Transport layer synchronized protocol simulation</p>
+    </div>
+    <span id="status" class="status">Ready</span>
+  </header>
+
+  <main class="grid">
+    <section class="panel controls">
+      <h2>Activity</h2>
+      <div class="tabs">
+        <button class="tab active" data-mode="browsing">Browsing</button>
+        <button class="tab" data-mode="mail">Mail</button>
+        <button class="tab" data-mode="streaming">Streaming</button>
+      </div>
+
+      <div id="browsing" class="mode active">
+        <label>URL</label>
+        <div class="row">
+          <input id="url" value="https://example.com" placeholder="https://example.com">
+          <button id="visit">Visit</button>
+        </div>
+        <p class="hint">Application: DNS + HTTP. Transport: TCP handshake, reliable segments and teardown.</p>
+      </div>
+
+      <div id="mail" class="mode">
+        <label>To</label>
+        <input id="to" placeholder="receiver@example.com">
+        <label>Subject</label>
+        <input id="subject" placeholder="Hello">
+        <label>Body</label>
+        <textarea id="body" rows="5" placeholder="Message body..."></textarea>
+        <button id="send">Send</button>
+        <p class="hint">Application: SMTP. Transport: TCP lifecycle carrying the SMTP conversation.</p>
+      </div>
+
+      <div id="streaming" class="mode">
+        <label>Quality</label>
+        <select id="quality">
+          <option>Auto</option><option>1080p</option><option>720p</option><option>480p</option>
+        </select>
+        <div class="stream-buttons">
+          <button id="play">▶ Play</button>
+          <button id="pause" class="secondary">Ⅱ Pause</button>
+        </div>
+        <p class="hint">Application: DNS + HTTP manifest/segments. Transport: TCP delivery, with an optional UDP comparison.</p>
+      </div>
+    </section>
+
+    <section class="panel visualizer">
+      <div class="viz-head">
+        <div>
+          <h2>Live Protocol Flow</h2>
+          <p id="flowTitle">Waiting for activity…</p>
+        </div>
+        <div class="transport">
+          <button id="prev" title="Previous">⏮</button>
+          <button id="toggle" title="Play/Pause">▶</button>
+          <button id="next" title="Next">⏭</button>
+          <button id="replay" title="Replay">↻</button>
+        </div>
+      </div>
+
+      <div class="layer-tabs" role="tablist" aria-label="Protocol layer">
+        <button class="layer-tab active" data-layer="application">Application Layer</button>
+        <button class="layer-tab" data-layer="transport">Transport Layer</button>
+      </div>
+
+      <div class="sync-line">
+        <span id="syncBadge">● Synchronized</span>
+        <span id="stepCounter">Step 0 / 0</span>
+        <span id="timing">t = —</span>
+      </div>
+
+      <div class="progress"><div id="bar"></div></div>
+
+      <section id="applicationView" class="layer-view active">
+        <div class="view-title">
+          <div>
+            <h3>Application-layer messages</h3>
+            <p>DNS, HTTP and SMTP events are synchronized to the same master timeline.</p>
+          </div>
+          <span id="appState" class="state-chip">Waiting</span>
+        </div>
+        <div id="appCard" class="focus-card empty">Trigger an activity to start the visualization.</div>
+      </section>
+
+      <section id="transportView" class="layer-view">
+        <div class="view-title">
+          <div>
+            <h3>Transport-layer messages</h3>
+            <p>TCP sequence/ACK numbers, flags, advertised window, direction and timing.</p>
+          </div>
+          <span id="tcpState" class="state-chip">CLOSED</span>
+        </div>
+        <div id="transportCard" class="focus-card empty">Trigger an activity to start the visualization.</div>
+      </section>
+
+      <div class="timeline-title">Synchronized timeline</div>
+      <div id="steps" class="steps"></div>
+      <div id="packet" class="packet">Trigger an activity to start the protocol visualization.</div>
+    </section>
+  </main>
+
+  <footer>
+    <span>FastAPI + HTML/CSS/JS</span>
+    <span>Educational protocol simulation — no real network traffic is generated.</span>
+  </footer>
+</div>
+<script src="/static/app.js"></script>
+</body>
+</html>
